@@ -821,22 +821,25 @@ table.matrix .yes {
   font-weight: 900;
 }
 
-.pbi-card {
-  margin-top: 1.5rem;
-  padding: 1.75rem;
-  border: 1px dashed var(--line);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.03);
+.bar-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-weight: 750;
+  margin: 0;
+}
+.bar-row .bar-count {
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.pbi-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
-}
-.pbi-card p {
-  color: var(--muted);
-  max-width: 520px;
-  margin-bottom: 0;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--line);
 }
 
 /* ---------- Rizen / Education ---------- */

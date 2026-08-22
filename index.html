@@ -678,17 +678,151 @@
                 </tbody>
               </table>
             </div>
+          </div>
 
-            <div class="pbi-card">
-              <div>
-                <h4>Power BI Portfolio</h4>
-                <p>
-                  Sanitized, publicly shareable Power BI reports are in progress
-                  and will link here once ready — no client data, tenant
-                  details, or private dashboards will ever be published.
-                </p>
+          <div class="chart-card">
+            <h3>Power BI Portfolio</h3>
+            <p class="chart-caption">
+              A self-built recreation of the Executive Overview page from a
+              <strong>synthetic, public-safe</strong> Cybersecurity &amp; IT
+              Operations demo dataset (Sep 2025–Aug 2026). No Rizen Group,
+              client, tenant, ticket, identity, endpoint, audit, or security
+              data is included — every record is fictional, built to demonstrate
+              the DAX measures and report design.
+            </p>
+
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-number">650</div>
+                <div class="kpi-label">Total Tickets</div>
               </div>
-              <span class="chip" aria-disabled="true">Coming Soon</span>
+              <div class="kpi-card">
+                <div class="kpi-number">78.6%</div>
+                <div class="kpi-label">SLA Attainment</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-number">32</div>
+                <div class="kpi-label">Open Security Findings</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-number">94.2%</div>
+                <div class="kpi-label">Endpoint Compliance</div>
+              </div>
+            </div>
+
+            <div class="dashboard-grid">
+              <div>
+                <h4>Security Findings by Severity</h4>
+                <div class="donut-wrap">
+                  <div
+                    class="donut"
+                    role="img"
+                    aria-label="Donut chart of 150 security findings by severity: Critical 13, High 45, Medium 58, Low 34"
+                    style="
+                      --donut-stops:
+                        #fb7185 0 8.7%, #f0b54c 8.7% 38.7%, #4da3ff 38.7% 77.3%,
+                        #6ee7b7 77.3% 100%;
+                    "
+                  >
+                    <span class="donut-total"
+                      ><strong>150</strong><span>Findings</span></span
+                    >
+                  </div>
+                  <ul class="donut-legend">
+                    <li>
+                      <span class="swatch" style="background: #fb7185"></span
+                      ><span><strong>Critical</strong> — 13</span>
+                    </li>
+                    <li>
+                      <span class="swatch" style="background: #f0b54c"></span
+                      ><span><strong>High</strong> — 45</span>
+                    </li>
+                    <li>
+                      <span class="swatch" style="background: #4da3ff"></span
+                      ><span><strong>Medium</strong> — 58</span>
+                    </li>
+                    <li>
+                      <span class="swatch" style="background: #6ee7b7"></span
+                      ><span><strong>Low</strong> — 34</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div>
+                <h4>Tickets by Category</h4>
+                <div class="bar-list">
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Access &amp; Identity</span
+                      ><span class="bar-count">135</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 100%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Endpoint</span><span class="bar-count">114</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 84%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Microsoft 365</span
+                      ><span class="bar-count">112</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 83%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Security</span><span class="bar-count">91</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 67%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Business App</span><span class="bar-count">87</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 64%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Hardware</span><span class="bar-count">76</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 56%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-item">
+                    <p class="bar-row">
+                      <span>Network</span><span class="bar-count">35</span>
+                    </p>
+                    <div class="bar-track">
+                      <div class="bar-fill" style="--bar-w: 26%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pbi-actions">
+              <a
+                class="button secondary"
+                href="assets/kwesi-powerbi-portfolio-demo-data.xlsx"
+                download
+                >Download the Demo Dataset (.xlsx)</a
+              >
+              <a class="button secondary" href="#connect"
+                >Request the Full Interactive Report</a
+              >
             </div>
           </div>
         </div>
