@@ -1264,7 +1264,7 @@ details[open] .toggle-chevron {
   max-width: 260px;
   object-fit: contain;
   border-radius: 0.6rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
 }
 .gallery-thumb-label {
   font-size: 0.8rem;
@@ -1312,7 +1312,7 @@ details[open] .toggle-chevron {
   max-height: 76vh;
   object-fit: contain;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
 }
 .lightbox-close,
 .lightbox-nav {
