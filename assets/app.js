@@ -163,4 +163,126 @@
       if (event.key === "ArrowLeft") showThumb(currentIndex - 1);
     });
   }
+
+  // Cyber Threat Intelligence ticker: try to upgrade the static fallback
+  // items to live CISA KEV entries. If the fetch fails, times out, or
+  // returns nothing usable, the fallback markup already in the page is
+  // left exactly as-is — the ticker never depends on this succeeding.
+  var tickerSetA = document.getElementById("tickerSetA");
+  var tickerSetB = document.getElementById("tickerSetB");
+  var tickerStatus = document.getElementById("tickerStatus");
+  var CVE_PATTERN = /^CVE-\d{4}-\d{4,7}$/;
+
+  function sanitizeLabel(value, maxLen) {
+    if (typeof value !== "string") return "";
+    var cleaned = value.replace(/[\r\n\t]+/g, " ").trim();
+    if (cleaned.length > maxLen) cleaned = cleaned.slice(0, maxLen - 1) + "…";
+    return cleaned;
+  }
+
+  function buildLiveItem(entry) {
+    var cve = typeof entry.cveID === "string" ? entry.cveID.trim() : "";
+    if (!CVE_PATTERN.test(cve)) return null;
+    var vendor = sanitizeLabel(entry.vendorProject, 40);
+    var product = sanitizeLabel(entry.product, 40);
+    var vendorProduct = [vendor, product].filter(Boolean).join(" ");
+
+    var li = document.createElement("li");
+    var link = document.createElement("a");
+    link.className = "ticker-live";
+    link.href = "https://nvd.nist.gov/vuln/detail/" + encodeURIComponent(cve);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.setAttribute(
+      "aria-label",
+      cve +
+        (vendorProduct ? ", " + vendorProduct : "") +
+        ", Known Exploited Vulnerability, opens NVD detail page in a new tab",
+    );
+
+    var cveSpan = document.createElement("span");
+    cveSpan.className = "ticker-cve";
+    cveSpan.textContent = cve;
+    link.appendChild(cveSpan);
+
+    if (vendorProduct) {
+      var sep1 = document.createElement("span");
+      sep1.className = "ticker-sep";
+      sep1.setAttribute("aria-hidden", "true");
+      sep1.textContent = "•";
+      link.appendChild(sep1);
+
+      var vendorSpan = document.createElement("span");
+      vendorSpan.textContent = vendorProduct;
+      link.appendChild(vendorSpan);
+    }
+
+    var sep2 = document.createElement("span");
+    sep2.className = "ticker-sep";
+    sep2.setAttribute("aria-hidden", "true");
+    sep2.textContent = "•";
+    link.appendChild(sep2);
+
+    var tag = document.createElement("span");
+    tag.className = "ticker-tag";
+    tag.textContent = "Known Exploited Vulnerability";
+    link.appendChild(tag);
+
+    li.appendChild(link);
+    return li;
+  }
+
+  function renderLiveTicker(payload) {
+    if (!payload || payload.ok !== true || !Array.isArray(payload.items)) {
+      return false;
+    }
+    var items = payload.items.map(buildLiveItem).filter(Boolean);
+    if (!items.length || !tickerSetA || !tickerSetB) return false;
+
+    tickerSetA.innerHTML = "";
+    tickerSetB.innerHTML = "";
+    items.forEach(function (li) {
+      tickerSetA.appendChild(li);
+      tickerSetB.appendChild(li.cloneNode(true));
+    });
+
+    if (tickerStatus && typeof payload.totalCount === "number") {
+      var count = payload.totalCount.toLocaleString("en-US");
+      var statusText = "KEV Catalog: " + count + " vulnerabilities";
+      if (typeof payload.latestAdditions === "number") {
+        statusText +=
+          " · Latest additions: " +
+          payload.latestAdditions.toLocaleString("en-US");
+      }
+      tickerStatus.textContent = statusText;
+    }
+    return true;
+  }
+
+  if (tickerSetA && tickerSetB && "fetch" in window) {
+    var controller = "AbortController" in window ? new AbortController() : null;
+    var timeoutId = controller
+      ? setTimeout(function () {
+          controller.abort();
+        }, 6000)
+      : null;
+
+    fetch("/api/kev", {
+      signal: controller ? controller.signal : undefined,
+      headers: { Accept: "application/json" },
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("kev fetch failed");
+        return res.json();
+      })
+      .then(function (payload) {
+        renderLiveTicker(payload);
+      })
+      .catch(function () {
+        /* fallback markup already in the DOM; nothing to do */
+      })
+      .finally(function () {
+        if (timeoutId) clearTimeout(timeoutId);
+      });
+  }
 })();
