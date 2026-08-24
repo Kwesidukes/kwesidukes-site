@@ -93,4 +93,74 @@
       });
     });
   });
+
+  // Three Pillars gallery lightbox.
+  var lightbox = document.getElementById("pillarLightbox");
+  var thumbs = Array.prototype.slice.call(
+    document.querySelectorAll(".gallery-thumb"),
+  );
+  if (lightbox && thumbs.length) {
+    var lightboxImg = document.getElementById("lightboxImg");
+    var lightboxCaption = document.getElementById("lightboxCaption");
+    var currentIndex = 0;
+
+    function showThumb(index) {
+      currentIndex = (index + thumbs.length) % thumbs.length;
+      var thumb = thumbs[currentIndex];
+      lightboxImg.src = thumb.getAttribute("data-full");
+      lightboxImg.alt = thumb.getAttribute("data-alt") || "";
+      var w = thumb.getAttribute("data-width");
+      var h = thumb.getAttribute("data-height");
+      if (w) lightboxImg.setAttribute("width", w);
+      if (h) lightboxImg.setAttribute("height", h);
+      lightboxCaption.textContent = thumb.getAttribute("data-caption") || "";
+    }
+
+    thumbs.forEach(function (thumb, index) {
+      thumb.addEventListener("click", function () {
+        showThumb(index);
+        if (typeof lightbox.showModal === "function") {
+          lightbox.showModal();
+        }
+      });
+    });
+
+    var closeBtn = document.getElementById("lightboxClose");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        lightbox.close();
+      });
+    }
+    var prevBtn = document.getElementById("lightboxPrev");
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function () {
+        showThumb(currentIndex - 1);
+      });
+    }
+    var nextBtn = document.getElementById("lightboxNext");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function () {
+        showThumb(currentIndex + 1);
+      });
+    }
+
+    // Close when clicking the backdrop (outside the dialog's own box).
+    lightbox.addEventListener("click", function (event) {
+      var rect = lightbox.getBoundingClientRect();
+      var inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!inside) {
+        lightbox.close();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (!lightbox.open) return;
+      if (event.key === "ArrowRight") showThumb(currentIndex + 1);
+      if (event.key === "ArrowLeft") showThumb(currentIndex - 1);
+    });
+  }
 })();
