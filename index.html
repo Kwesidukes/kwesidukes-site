@@ -14,6 +14,17 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#07111f" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap"
+    />
+
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://kwesidukes.au/" />
     <meta
@@ -26,8 +37,11 @@
     />
     <meta
       property="og:image"
-      content="https://kwesidukes.au/assets/kd-banner-current.png"
+      content="https://kwesidukes.au/assets/kd-og-image.jpg"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Kwesi Dukes" />
     <meta property="og:site_name" content="Kwesi Dukes" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -41,7 +55,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://kwesidukes.au/assets/kd-banner-current.png"
+      content="https://kwesidukes.au/assets/kd-og-image.jpg"
     />
 
     <link rel="icon" href="assets/kd-logo.png" />
@@ -106,6 +120,7 @@
         <a href="#credentials">Credentials</a>
         <a href="#story">Story</a>
         <a href="#connect">Connect</a>
+        <span class="nav-indicator" aria-hidden="true"></span>
       </nav>
     </header>
 
@@ -114,33 +129,39 @@
       <section class="hero">
         <div class="hero-grid" aria-hidden="true"></div>
         <div>
-          <p class="eyebrow">Technology • Music • Legacy</p>
-          <h1>
+          <p class="eyebrow hero-in" style="--stagger: 1">
+            Technology • Music • Legacy
+          </p>
+          <h1 class="hero-in" style="--stagger: 2">
             Building systems, creating sound, and leaving something meaningful
             behind.
           </h1>
-          <p class="lead">
+          <p class="hero-positioning hero-in" style="--stagger: 3">
+            <span>Business Analysis</span>
+            <span>Information Systems</span>
+            <span>Business Intelligence</span>
+            <span>Cybersecurity</span>
+            <span>Governance</span>
+          </p>
+          <p class="lead hero-in" style="--stagger: 4">
             I'm Kwesi Dukes — Director of IT Solutions (Consulting) at The Rizen
             Group, working across business systems, cloud, data, and
             cybersecurity, and building a new chapter from Perth, Western
             Australia.
           </p>
-          <div class="actions">
+          <div class="actions hero-in" style="--stagger: 5">
             <a class="button primary" href="#work">View My Work</a>
+            <a class="button secondary" href="#experience"
+              >Explore My Experience</a
+            >
             <a class="button secondary" href="assets/resume.pdf"
               >Download Resume</a
-            >
-            <a
-              class="button secondary"
-              href="https://www.linkedin.com/in/kwesidukes"
-              target="_blank"
-              rel="noopener noreferrer"
-              >LinkedIn</a
             >
           </div>
         </div>
         <img
-          class="hero-img"
+          class="hero-img hero-in"
+          style="--stagger: 3"
           src="assets/kwesi-suit.jpeg"
           alt="Kwesi Dukes professional portrait"
           width="640"
@@ -1222,15 +1243,46 @@
           </details>
         </div>
 
-        <div class="pillar-foundation">
-          <p class="eyebrow">The Three Pillars. One Foundation.</p>
-          <h3>Build all three. Build durable professional excellence.</h3>
-          <p class="wide">
-            Education provides understanding. Certifications provide validation
-            and currency. Experience develops application and judgment.
-            Together, they create durable professional capability — no pillar
-            replaces the other two.
-          </p>
+        <div class="pillar-convergence reveal">
+          <div class="convergence-flow" aria-hidden="true">
+            <span class="convergence-node convergence-node-education">Why</span>
+            <span class="convergence-line"></span>
+            <span class="convergence-node convergence-node-certifications"
+              >Currency</span
+            >
+            <span class="convergence-line"></span>
+            <span class="convergence-node convergence-node-experience"
+              >Judgment</span
+            >
+            <span class="convergence-line convergence-line-final"></span>
+            <span class="convergence-node convergence-node-final"
+              >Kwesi Dukes</span
+            >
+          </div>
+
+          <div class="pillar-foundation">
+            <p class="eyebrow">The Three Pillars. One Foundation.</p>
+            <h3>Build all three. Build durable professional excellence.</h3>
+            <p class="wide">
+              Education provides understanding. Certifications provide
+              validation and currency. Experience develops application and
+              judgment. Together, they create durable professional capability —
+              no pillar replaces the other two.
+            </p>
+          </div>
+
+          <figure class="pillar-signature">
+            <img
+              src="assets/three-pillars-foundation.webp"
+              alt="Dukes' Three Pillars Framework — Education, Certifications, and Experience converging into one foundation under the Kwesi Dukes name."
+              width="1402"
+              height="922"
+              loading="lazy"
+            />
+            <figcaption>
+              The complete framework, from the original five-part series below.
+            </figcaption>
+          </figure>
         </div>
 
         <div class="pillar-gallery">
@@ -1436,17 +1488,17 @@
         </div>
         <div class="logos">
           <img
-            src="assets/superchef-logo.png"
+            src="assets/superchef-logo.jpeg"
             alt="Super Chef Beats logo"
             width="300"
-            height="282"
+            height="300"
             loading="lazy"
           />
           <img
-            src="assets/iiyod-logo.jpeg"
+            src="assets/iiyod-logo.png"
             alt="IIYOD logo"
             width="300"
-            height="300"
+            height="282"
             loading="lazy"
           />
         </div>

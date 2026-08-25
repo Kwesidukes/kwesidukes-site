@@ -16,6 +16,22 @@
   --blue: #4da3ff;
   --green: #6ee7b7;
   --radius: 1.4rem;
+
+  /* Motion system: two signature curves, four durations. Everything
+     that moves on this site should reach for one of these rather than
+     inventing a new value — that consistency is most of what makes
+     motion feel designed instead of ad-hoc. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* entrances, reveals */
+  --ease-standard: cubic-bezier(
+    0.4,
+    0,
+    0.2,
+    1
+  ); /* hover, toggle, click feedback */
+  --dur-instant: 150ms; /* immediate feedback: press, toggle */
+  --dur-fast: 220ms; /* hover states, small UI transitions */
+  --dur-base: 340ms; /* card lift, dropdown, nav state change */
+  --dur-slow: 640ms; /* section/element reveal choreography */
 }
 
 * {
@@ -34,8 +50,10 @@ html {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
     scroll-behavior: auto !important;
   }
 }
@@ -107,9 +125,20 @@ header {
   align-items: center;
   gap: 1rem;
   padding: 0.9rem clamp(1rem, 4vw, 4rem);
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  transition:
+    background var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard);
+}
+/* Once the page has scrolled even slightly, the transparent hero-overlay
+   header gives way to a blurred, bordered app bar for legibility over
+   arbitrary section content. */
+header.scrolled {
   background: rgba(7, 17, 31, 0.82);
   backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--line);
+  border-bottom-color: var(--line);
 }
 
 .brand {
@@ -118,6 +147,11 @@ header {
   gap: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.02em;
+  transition: opacity var(--dur-instant) var(--ease-standard);
+}
+.brand:hover,
+.brand:focus-visible {
+  opacity: 0.8;
 }
 .brand img {
   width: 42px;
@@ -127,6 +161,7 @@ header {
 }
 
 nav.primary-nav {
+  position: relative;
   display: flex;
   gap: 1rem;
   color: var(--muted);
@@ -139,11 +174,55 @@ nav.primary-nav::-webkit-scrollbar {
   display: none;
 }
 nav.primary-nav a {
-  padding: 0.25rem 0.1rem;
+  position: relative;
+  padding: 0.25rem 0.1rem 0.4rem;
+  transition: color var(--dur-instant) var(--ease-standard);
 }
 nav.primary-nav a:hover,
-nav.primary-nav a:focus-visible {
+nav.primary-nav a:focus-visible,
+nav.primary-nav a.active {
   color: var(--text);
+}
+/* Hover preview underline, independent of the sliding active-section
+   indicator below — a quick, local hint on whichever link is under the
+   pointer/focus. */
+nav.primary-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0.1rem;
+  right: 0.1rem;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(0.6);
+  transition:
+    opacity var(--dur-instant) var(--ease-standard),
+    transform var(--dur-instant) var(--ease-standard);
+}
+nav.primary-nav a:hover::after,
+nav.primary-nav a:focus-visible::after {
+  opacity: 0.4;
+  transform: scaleX(1);
+}
+/* Sliding indicator tracking whichever section is currently in view,
+   positioned by app.js via transform/width so it glides between links
+   instead of popping. Hidden (opacity 0) until a tracked section has
+   actually been reached. */
+.nav-indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  border-radius: 2px;
+  background: var(--gold);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    width var(--dur-base) var(--ease-standard),
+    opacity var(--dur-fast) var(--ease-standard);
 }
 
 main {
@@ -154,10 +233,10 @@ main {
 .hero {
   min-height: 86vh;
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
   gap: 3rem;
-  padding: 5rem 0;
+  padding: 3.25rem 0;
   position: relative;
 }
 
@@ -166,13 +245,28 @@ main {
   inset: -2rem 0 auto 0;
   height: 60%;
   overflow: hidden;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+.hero-grid::before {
+  content: "";
+  position: absolute;
+  inset: -42px;
   background-image:
     linear-gradient(rgba(77, 163, 255, 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgba(77, 163, 255, 0.09) 1px, transparent 1px);
   background-size: 42px 42px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent);
-  pointer-events: none;
-  z-index: -1;
+  animation: hero-grid-drift 56s linear infinite;
+  will-change: transform;
+}
+@keyframes hero-grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-42px, -42px, 0);
+  }
 }
 
 .eyebrow {
@@ -183,6 +277,39 @@ main {
   font-weight: 900;
 }
 
+/* Hero entrance: a restrained staggered rise, played once on load.
+   Distinct from .reveal (which is scroll-triggered) — the hero is
+   always in view on first paint, so this fires immediately. The
+   global reduced-motion rule collapses it to its end state instantly. */
+.hero-in {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: hero-rise var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(var(--stagger, 0) * 90ms);
+}
+@keyframes hero-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-positioning {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.65rem;
+  margin: 0 0 1rem;
+}
+.hero-positioning span {
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: var(--muted);
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
 h1,
 h2,
 h3,
@@ -191,10 +318,10 @@ p {
   margin-top: 0;
 }
 h1 {
-  font-size: clamp(3.4rem, 7vw, 6.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.075em;
-  margin-bottom: 1.25rem;
+  font-size: clamp(2.4rem, 3.8vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.1rem;
 }
 h2 {
   font-size: clamp(2.1rem, 5vw, 4.3rem);
@@ -213,7 +340,8 @@ h4 {
 
 .lead {
   color: var(--muted);
-  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  font-size: clamp(1.05rem, 1.9vw, 1.25rem);
+  line-height: 1.55;
   max-width: 760px;
 }
 
@@ -236,7 +364,7 @@ h4 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 .button {
   display: inline-flex;
@@ -248,8 +376,8 @@ h4 {
   font-weight: 900;
   border: 1px solid var(--line);
   transition:
-    transform 0.15s ease,
-    background 0.15s ease;
+    transform var(--dur-instant) var(--ease-standard),
+    background var(--dur-instant) var(--ease-standard);
 }
 .button:hover {
   transform: translateY(-2px);
@@ -437,19 +565,12 @@ footer a:hover {
   opacity: 0;
   transform: translateY(18px);
   transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
 }
 .reveal.is-visible {
   opacity: 1;
   transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
 
 /* ---------- Section intros ---------- */
@@ -512,11 +633,23 @@ footer a:hover {
   font-size: 0.88rem;
   font-weight: 750;
   cursor: pointer;
+  transition:
+    background var(--dur-instant) var(--ease-standard),
+    color var(--dur-instant) var(--ease-standard),
+    border-color var(--dur-instant) var(--ease-standard);
+}
+.chip:hover,
+.chip:focus-visible {
+  border-color: rgba(240, 181, 76, 0.5);
+  color: var(--text);
 }
 .chip[aria-pressed="true"] {
   background: var(--gold);
   color: #111722;
   border-color: transparent;
+}
+.chip[aria-pressed="true"]:hover {
+  color: #111722;
 }
 
 .project-grid {
@@ -533,8 +666,8 @@ footer a:hover {
   flex-direction: column;
   gap: 1rem;
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+    transform var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard);
 }
 .project-card:hover {
   transform: translateY(-4px);
@@ -898,6 +1031,9 @@ table.matrix .yes {
   color: var(--blue);
   list-style: none;
 }
+.credential-secondary summary:hover {
+  text-decoration: underline;
+}
 .credential-secondary summary::-webkit-details-marker {
   display: none;
 }
@@ -980,13 +1116,6 @@ table.matrix .yes {
     transform: scaleY(1);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .eq-accent span {
-    animation: none;
-    height: 60% !important;
-  }
-}
-
 /* ---------- Dukes Technology Group ---------- */
 .dtg-card {
   display: grid;
@@ -1042,7 +1171,7 @@ table.matrix .yes {
     grid-template-columns: 1fr;
   }
   h1 {
-    font-size: clamp(3.2rem, 16vw, 5.2rem);
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
   }
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1079,8 +1208,8 @@ table.matrix .yes {
   background: linear-gradient(180deg, var(--panel2), var(--panel));
   overflow: hidden;
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+    transform var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard);
 }
 .pillar-card:hover {
   transform: translateY(-4px);
@@ -1177,7 +1306,7 @@ details[open] .pillar-toggle .label-open {
 .toggle-chevron {
   width: 1rem;
   height: 1rem;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 details[open] .toggle-chevron {
   transform: rotate(180deg);
@@ -1209,8 +1338,82 @@ details[open] .toggle-chevron {
   text-decoration: underline;
 }
 
-.pillar-foundation {
+.pillar-convergence {
   margin-top: 2.5rem;
+}
+
+/* Signature convergence moment: the three pillars named by what they give
+   you (Why / Currency / Judgment) visually resolve into one identity,
+   echoing the "Three Pillars. One Foundation." copy right below it. */
+.convergence-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.convergence-node {
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+.convergence-node-education {
+  border-color: rgba(77, 163, 255, 0.4);
+  color: #bcd7ff;
+}
+.convergence-node-certifications {
+  border-color: rgba(155, 110, 220, 0.45);
+  color: #ddc9f7;
+}
+.convergence-node-experience {
+  border-color: rgba(240, 181, 76, 0.4);
+  color: var(--gold);
+}
+.convergence-node-final {
+  padding: 0.65rem 1.35rem;
+  background: var(--gold);
+  border-color: transparent;
+  color: #111722;
+  font-weight: 900;
+}
+.convergence-line {
+  position: relative;
+  width: clamp(1.5rem, 4vw, 3rem);
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+.convergence-line-final {
+  background: linear-gradient(90deg, var(--line), var(--gold));
+}
+.convergence-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.85),
+    transparent
+  );
+  transform: translateX(-100%);
+}
+.pillar-convergence.is-visible .convergence-line::after {
+  animation: convergence-pulse var(--dur-slow) var(--ease-out) 0.5s 1 both;
+}
+@keyframes convergence-pulse {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.pillar-foundation {
   padding: 2rem;
   text-align: center;
   border: 1px solid var(--line);
@@ -1224,6 +1427,23 @@ details[open] .toggle-chevron {
 .pillar-foundation p {
   max-width: 640px;
   margin-inline: auto;
+}
+
+.pillar-signature {
+  margin: 2.5rem 0 0;
+  text-align: center;
+}
+.pillar-signature img {
+  width: 100%;
+  max-width: 820px;
+  border-radius: 1.4rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+.pillar-signature figcaption {
+  margin-top: 0.85rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .pillar-gallery {
@@ -1251,8 +1471,8 @@ details[open] .toggle-chevron {
   color: inherit;
   font: inherit;
   transition:
-    transform 0.2s ease,
-    border-color 0.2s ease;
+    transform var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard);
 }
 .gallery-thumb:hover,
 .gallery-thumb:focus-visible {
@@ -1544,7 +1764,22 @@ details[open] .toggle-chevron {
   }
 }
 
+/* ---------- Reduced motion: component-specific fallbacks ----------
+   The blanket rule at the top of this file collapses every animation/
+   transition duration to near-zero, which is enough for most
+   components. These three need an explicit end-state too, because
+   collapsing duration alone would freeze them mid-keyframe instead of
+   at a clean, intentional resting state. */
 @media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .eq-accent span {
+    animation: none;
+    height: 60% !important;
+  }
   .ticker-track {
     animation: none !important;
     transform: none !important;
