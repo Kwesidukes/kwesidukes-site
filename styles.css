@@ -1433,12 +1433,13 @@ details[open] .toggle-chevron {
   margin: 2.5rem 0 0;
   text-align: center;
 }
+/* The graphic already has its own baked-in frame (rounded corners, hairline
+   border) — no extra border/radius/shadow here, or it reads as a mismatched
+   box-within-a-box. Full width to match .pillar-foundation's column above it. */
 .pillar-signature img {
   width: 100%;
-  max-width: 820px;
-  border-radius: 1.4rem;
-  border: 1px solid var(--line);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  display: block;
+  margin-inline: auto;
 }
 .pillar-signature figcaption {
   margin-top: 0.85rem;
