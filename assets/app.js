@@ -28,6 +28,98 @@
     });
   }
 
+  // Premium nav: transparent over the hero, blurred once the page has
+  // scrolled even slightly.
+  var siteHeader = document.querySelector("header");
+  if (siteHeader) {
+    var HEADER_SCROLL_THRESHOLD = 24;
+    var updateHeaderScrollState = function () {
+      siteHeader.classList.toggle(
+        "scrolled",
+        window.scrollY > HEADER_SCROLL_THRESHOLD,
+      );
+    };
+    updateHeaderScrollState();
+    window.addEventListener("scroll", updateHeaderScrollState, {
+      passive: true,
+    });
+  }
+
+  // Premium nav: active-section indicator. A sliding underline tracks
+  // whichever nav link corresponds to the section currently crossing a
+  // fixed trigger line, recomputed on scroll/resize. Sections are walked
+  // in document order (matching nav order) and the last one whose top has
+  // passed the trigger line wins — the standard scrollspy algorithm,
+  // robust to both incremental scrolling and instant jumps (anchor
+  // clicks, scrollIntoView), unlike IntersectionObserver entry ordering.
+  var navEl = document.querySelector("nav.primary-nav");
+  var navIndicator = document.querySelector(".nav-indicator");
+  var navLinks = navEl
+    ? Array.prototype.slice.call(navEl.querySelectorAll("a[href^='#']"))
+    : [];
+
+  if (navEl && navLinks.length) {
+    var sectionLinkMap = {};
+    var observedSections = [];
+    navLinks.forEach(function (link) {
+      var id = link.getAttribute("href").slice(1);
+      var section = document.getElementById(id);
+      if (section) {
+        sectionLinkMap[id] = link;
+        observedSections.push(section);
+      }
+    });
+
+    var activeNavLink = null;
+    function moveNavIndicator() {
+      if (!navIndicator || !activeNavLink) return;
+      navIndicator.style.width = activeNavLink.offsetWidth + "px";
+      navIndicator.style.transform =
+        "translateX(" + (activeNavLink.offsetLeft - navEl.scrollLeft) + "px)";
+      navIndicator.style.opacity = "1";
+    }
+    function setActiveNavLink(link) {
+      if (!link || link === activeNavLink) return;
+      if (activeNavLink) activeNavLink.classList.remove("active");
+      link.classList.add("active");
+      activeNavLink = link;
+      moveNavIndicator();
+    }
+
+    var NAV_TRIGGER_FRACTION = 0.35;
+    function refreshActiveSection() {
+      var triggerY = window.innerHeight * NAV_TRIGGER_FRACTION;
+      var current = observedSections[0];
+      for (var i = 0; i < observedSections.length; i++) {
+        if (observedSections[i].getBoundingClientRect().top <= triggerY) {
+          current = observedSections[i];
+        } else {
+          break;
+        }
+      }
+      setActiveNavLink(sectionLinkMap[current.id]);
+    }
+
+    var navRefreshTicking = false;
+    function scheduleNavRefresh() {
+      if (navRefreshTicking) return;
+      navRefreshTicking = true;
+      window.requestAnimationFrame(function () {
+        refreshActiveSection();
+        navRefreshTicking = false;
+      });
+    }
+
+    if (observedSections.length) {
+      scheduleNavRefresh();
+      window.addEventListener("scroll", scheduleNavRefresh, {
+        passive: true,
+      });
+      window.addEventListener("resize", scheduleNavRefresh);
+    }
+    navEl.addEventListener("scroll", moveNavIndicator, { passive: true });
+  }
+
   // KPI count-up animation.
   var kpiNumbers = document.querySelectorAll(".kpi-number[data-target]");
   function animateCount(el) {

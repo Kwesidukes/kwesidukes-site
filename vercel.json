@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/kev.js": {
+      "maxDuration": 10
+    }
+  }
+}
