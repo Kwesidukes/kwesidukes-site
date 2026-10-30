@@ -378,3 +378,68 @@
       });
   }
 })();
+
+
+/* The Connection Lab: keyboard-accessible, dependency-free SVG puzzle */
+(function () {
+  "use strict";
+  var board = document.getElementById("connection-board");
+  var dotsLayer = document.getElementById("connection-dots");
+  var linesLayer = document.getElementById("connection-lines");
+  var status = document.getElementById("connection-status");
+  var result = document.getElementById("connection-result");
+  var reset = document.getElementById("connection-reset");
+  if (!board || !dotsLayer || !linesLayer || !status || !result || !reset) return;
+
+  var ns = "http://www.w3.org/2000/svg";
+  var points = [[10,80],[10,33],[30,53],[39,18],[53,51],[68,18],[79,53],[98,33],[98,80]];
+  var progress = 0;
+  var dotNodes = [];
+  function element(name, attrs, parent) {
+    var node = document.createElementNS(ns, name);
+    Object.keys(attrs).forEach(function (key) { node.setAttribute(key, attrs[key]); });
+    parent.appendChild(node);
+    return node;
+  }
+  function draw() {
+    linesLayer.replaceChildren();
+    dotNodes.forEach(function (node, i) {
+      node.classList.toggle("completed", i < progress);
+      node.setAttribute("aria-label", "Dot " + (i + 1) + (i < progress ? ", connected" : i === progress ? ", next" : ""));
+    });
+    if (progress > 1) {
+      element("polyline", {
+        "class": "connection-line",
+        points: points.slice(0, progress).map(function (p) { return p.join(","); }).join(" ")
+      }, linesLayer);
+    }
+    if (progress === points.length) {
+      element("line", {"class":"connection-line",x1:98,y1:80,x2:10,y2:80}, linesLayer);
+      status.textContent = "All nine dots connected. Crown revealed!";
+      result.hidden = false;
+    } else {
+      status.textContent = progress === 0
+        ? "Start at dot 1, then follow the numbers. You can tap or use your keyboard."
+        : progress + " of 9 connected. Find dot " + (progress + 1) + ".";
+      result.hidden = true;
+    }
+  }
+  points.forEach(function (p, i) {
+    var group = element("g", {"class":"connection-dot",tabindex:"0",role:"button","aria-label":"Dot "+(i+1)}, dotsLayer);
+    element("circle",{"class":"connection-hit",cx:p[0],cy:p[1],r:7},group);
+    element("circle",{"class":"connection-point",cx:p[0],cy:p[1],r:3.8},group);
+    var label = element("text",{x:p[0],y:p[1]-7},group);
+    label.textContent = String(i+1);
+    function select() {
+      if (i === progress) { progress += 1; draw(); }
+      else if (progress !== points.length) { status.textContent = "Try dot " + (progress + 1) + " next."; }
+    }
+    group.addEventListener("click", select);
+    group.addEventListener("keydown",function (event) {
+      if (event.key === "Enter" || event.key === " ") {event.preventDefault();select();}
+    });
+    dotNodes.push(group);
+  });
+  reset.addEventListener("click",function () {progress=0;draw();dotNodes[0].focus();});
+  draw();
+})();

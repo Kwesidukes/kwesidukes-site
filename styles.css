@@ -1803,3 +1803,21 @@ details[open] .toggle-chevron {
     display: none;
   }
 }
+
+
+/* Connection Lab — optional interactive puzzle */
+.connection-lab-panel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(240px,.9fr);gap:clamp(1rem,4vw,3rem);align-items:center;padding:clamp(1rem,4vw,2.5rem);border:1px solid var(--line);border-radius:24px;background:var(--panel)}
+.connection-lab-board{border-radius:18px;background:radial-gradient(circle at 50% 40%,#182943,#091320 76%);border:1px solid var(--line);padding:1rem;min-width:0}
+.connection-lab-board svg{display:block;width:100%;height:auto;max-height:360px;aspect-ratio:11/10}
+.connection-lab-controls h3{font-size:clamp(1.5rem,3vw,2.3rem);margin:.5rem 0}
+.connection-lab-controls p:not(.eyebrow){color:var(--muted);line-height:1.65}
+.connection-lab-result{color:var(--gold)!important;font-weight:700}
+.connection-dot{cursor:pointer;outline:none}
+.connection-dot .connection-hit{fill:transparent}
+.connection-dot .connection-point{fill:#6a86a9;stroke:#d6e2f1;stroke-width:.5}
+.connection-dot text{fill:#fff;font-size:4.5px;font-weight:800;text-anchor:middle;pointer-events:none}
+.connection-dot.completed .connection-point{fill:var(--gold);stroke:#ffe1a2}
+.connection-dot:focus-visible .connection-point{stroke:#fff;stroke-width:1.8}
+.connection-dot:hover .connection-point{stroke:var(--gold);stroke-width:1.5}
+.connection-line{stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+@media(max-width:760px){.connection-lab-panel{grid-template-columns:1fr}.connection-lab-board svg{max-height:300px}}

@@ -1731,6 +1731,31 @@
         </div>
       </section>
 
+      <!-- THE CONNECTION LAB: OPTIONAL INTERACTIVE EASTER EGG -->
+      <section id="connection-lab" class="section reveal connection-lab" aria-labelledby="connection-lab-title">
+        <div class="section-head">
+          <p class="eyebrow">A Little Curiosity</p>
+          <h2 id="connection-lab-title">The Connection Lab.</h2>
+          <p class="wide">I like figuring out how things connect. Try this little puzzle: tap the numbered dots in order to uncover a familiar shape.</p>
+        </div>
+        <div class="connection-lab-panel">
+          <div class="connection-lab-board">
+            <svg id="connection-board" viewBox="0 0 110 100" role="group" aria-label="Connect the dots puzzle. Select dots 1 through 9 in order." preserveAspectRatio="xMidYMid meet">
+              <title>Connect nine numbered dots to reveal a shape</title>
+              <g id="connection-lines"></g>
+              <g id="connection-dots"></g>
+            </svg>
+          </div>
+          <div class="connection-lab-controls">
+            <p class="eyebrow">THE PUZZLE</p>
+            <h3>Everything connects.</h3>
+            <p id="connection-status" role="status" aria-live="polite">Start at dot 1, then follow the numbers. You can tap or use your keyboard.</p>
+            <button type="button" class="button secondary" id="connection-reset">Start Over</button>
+            <p class="connection-lab-result" id="connection-result" hidden>👑 You found the crown. Strategy • Technology • Excellence. Sometimes the answer appears when you connect the pieces.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- CONNECT -->
       <section id="connect" class="section contact reveal">
         <p class="eyebrow">Connect</p>
