@@ -1821,3 +1821,9 @@ details[open] .toggle-chevron {
 .connection-dot:hover .connection-point{stroke:var(--gold);stroke-width:1.5}
 .connection-line{stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
 @media(max-width:760px){.connection-lab-panel{grid-template-columns:1fr}.connection-lab-board svg{max-height:300px}}
+
+/* Unified current-contract and professional-experience cards */
+.current-contract-grid .contract-card,.experience-grid .experience-card{min-width:0}
+.contract-role{font-size:1rem;font-weight:800;line-height:1.55;color:var(--text);margin:.1rem 0}
+.current-contract-grid .project-context,.experience-grid .project-context{margin:0;color:var(--gold)}
+.experience-grid .project-link{margin-top:auto;align-self:flex-start}
