@@ -1827,3 +1827,12 @@ details[open] .toggle-chevron {
 .contract-role{font-size:1rem;font-weight:800;line-height:1.55;color:var(--text);margin:.1rem 0}
 .current-contract-grid .project-context,.experience-grid .project-context{margin:0;color:var(--gold)}
 .experience-grid .project-link{margin-top:auto;align-self:flex-start}
+
+/* Current contracts: consistent annualized gross presentation */
+.contract-title-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:.8rem 1rem}
+.contract-title-row h3{margin:0;min-width:0;flex:1 1 130px}
+.contract-earnings{display:flex;flex-direction:column;gap:.35rem;text-align:right;flex:0 1 auto}
+.contract-earnings span{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.contract-earnings strong{font-size:clamp(1.06rem,1.8vw,1.35rem);color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.contract-disclaimer{font-size:.78rem;line-height:1.7;max-width:980px;color:var(--muted);margin-top:1.1rem}
+@media(max-width:560px){.contract-title-row{display:block}.contract-earnings{text-align:left;margin-top:.75rem}.contract-earnings strong{white-space:normal}}
