@@ -5,3 +5,6 @@
 
 /* Published issue refinements: purposeful non-repeating photography */
 .article-art img{object-position:center 58%}
+
+/* Volume 01 original soundtrack */
+.soundtrack{background:#292d28;color:#f3efe6;padding:clamp(28px,5vw,60px);margin:0 auto 92px;max-width:1180px;border:1px solid #44483e}.soundtrack .eyebrow{color:#c7c9b7}.soundtrack-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid #50554c;padding-bottom:22px}.soundtrack h2{font-size:clamp(25px,3.4vw,43px);line-height:1.25;margin:12px 0 0}.soundtrack-symbol{font-size:50px;line-height:1;color:#b4b99d}.track-detail{display:flex;justify-content:space-between;align-items:center;padding:30px 0 18px}.soundtrack h3{font-size:30px;margin:7px 0 0}.track-number{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#bdc0aa}.track-detail p{font:13px/1.5 'DM Sans',sans-serif;color:#d3d4c6;margin:7px 0 0}.soundtrack audio{width:100%;display:block;accent-color:#a5ab8e}.soundtrack-note{font:11px/1.5 'DM Sans',sans-serif;color:#bbc0af;margin:15px 0 0}.soundtrack-inline{max-width:720px;margin:0 auto 65px}@media(max-width:560px){.soundtrack{padding:28px 23px;margin-bottom:70px}.soundtrack-inline{margin-bottom:55px}}
